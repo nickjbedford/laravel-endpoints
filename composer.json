@@ -1,0 +1,31 @@
+{
+	"name": "nickjbedford/laravel-endpoints",
+	"description": "The Laravel Endpoints framework provides an easy way to implement API endpoints in separate Responsable-style classes.",
+	"minimum-stability": "stable",
+	"type": "library",
+    "keywords": [
+		"json", "api", "rest"
+	],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Nick Bedford",
+			"email": "email@nickbedford.com"
+		}
+	],
+	"require": {
+		"php": ">=7.4",
+		"laravel/framework": ">=6",
+        "nickjbedford/json-response-laravel": "*",
+		"ext-json": "*"
+	},
+	"require-dev": {
+        "phpunit/phpunit": "*",
+		"orchestra/testbench": "*"
+	},
+    "autoload": {
+        "psr-4": {
+            "YetAnother\\Laravel\\": "src/"
+        }
+    }
+}
