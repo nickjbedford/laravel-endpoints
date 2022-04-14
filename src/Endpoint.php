@@ -35,6 +35,18 @@
 		protected bool $update = false;
 		protected bool $delete = false;
 		
+		/** @var string|null Specifies a custom URI for the GET method. */
+		protected ?string $getUri = null;
+		
+		/** @var string|null Specifies a custom URI for the POST method. */
+		protected ?string $postUri = null;
+		
+		/** @var string|null Specifies a custom URI for the PATCH method. */
+		protected ?string $updateUri = null;
+		
+		/** @var string|null Specifies a custom URI for the DELETE method. */
+		protected ?string $deleteUri = null;
+		
 		/**
 		 * Registers the endpoint routes. This method can be called within a Route::group() call and
 		 * does not define any wrapping group itself.
@@ -46,16 +58,16 @@
 			$routes = [];
 			
 			if ($this->get)
-				$routes[] = $router->get($this->uri, Closure::fromCallable([$this, 'get']))->name("{$this->routePrefix}get");
+				$routes[] = $router->get($this->getUri ?: $this->uri, Closure::fromCallable([$this, 'get']))->name("{$this->routePrefix}get");
 			
 			if ($this->post)
-				$routes[] = $router->post($this->uri, Closure::fromCallable([$this, 'post']))->name("{$this->routePrefix}post");
+				$routes[] = $router->post($this->postUri ?: $this->uri, Closure::fromCallable([$this, 'post']))->name("{$this->routePrefix}post");
 			
 			if ($this->update)
-				$routes[] = $router->patch($this->uri, Closure::fromCallable([$this, 'update']))->name("{$this->routePrefix}update");
+				$routes[] = $router->patch($this->updateUri ?: $this->uri, Closure::fromCallable([$this, 'update']))->name("{$this->routePrefix}update");
 			
 			if ($this->delete)
-				$routes[] = $router->delete($this->uri, Closure::fromCallable([$this, 'delete']))->name("{$this->routePrefix}delete");
+				$routes[] = $router->delete($this->deleteUri ?: $this->uri, Closure::fromCallable([$this, 'delete']))->name("{$this->routePrefix}delete");
 			
 			/** @var Route $route */
 			foreach($routes as $route)
