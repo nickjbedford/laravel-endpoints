@@ -21,9 +21,11 @@
 		protected bool $delete = true;
 		protected string $routePrefix = self::PREFIX;
 		
+		protected ?string $getUri = self::URI . '/{user?}';
+		
 		function get(Request $request): Response
 		{
-			return $this->success(self::GetResponse);
+			return $this->success($request->user ?? self::GetResponse);
 		}
 		
 		function post(Request $request): Response

@@ -24,12 +24,12 @@
 		
 		function testTestEndpointGetReturnsSuccess()
 		{
-			$response = $this->get(route(TestEndpoint::PREFIX . 'get'))
+			$response = $this->get(route(TestEndpoint::PREFIX . 'get', [ 'user' => 123 ]))
 				->assertOk()
 				->getOriginalContent();
 			
 			self::assertTrue($response['success']);
-			self::assertEquals(TestEndpoint::GetResponse, $response['data']);
+			self::assertEquals(123, $response['data']);
 		}
 		
 		function testTestEndpointPostReturnsSuccess()
