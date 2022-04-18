@@ -8,7 +8,6 @@
 	namespace YetAnother\Laravel;
 	
 	use Closure;
-	use Exception;
 	use Illuminate\Contracts\Support\Responsable;
 	use Illuminate\Http\Request;
 	use Illuminate\Routing\Route;
@@ -17,6 +16,13 @@
 	use Throwable;
 	use YetAnother\Laravel\Traits\RespondsWithJson;
 	
+	/**
+	 * Represents an endpoint controller.
+	 * @method Response|Responsable get(Request $request, ...$args)
+	 * @method Response|Responsable post(Request $request, ...$args)
+	 * @method Response|Responsable update(Request $request, ...$args)
+	 * @method Response|Responsable delete(Request $request, ...$args)
+	 */
 	abstract class Endpoint
 	{
 		use RespondsWithJson;
@@ -75,50 +81,6 @@
 				if ($this->middleware)
 					$route->middleware($this->middleware);
 			}
-		}
-		
-		/**
-		 * Handles a GET/HEAD request and returns a response.
-		 * @param Request $request
-		 * @return Response|Responsable
-		 * @throws Throwable
-		 */
-		public function get(Request $request)
-		{
-			throw new Exception('Endpoint GET handler is not implemented.');
-		}
-		
-		/**
-		 * Handles a POST request and returns a response.
-		 * @param Request $request
-		 * @return Response|Responsable
-		 * @throws Throwable
-		 */
-		public function post(Request $request)
-		{
-			throw new Exception('Endpoint POST handler is not implemented.');
-		}
-		
-		/**
-		 * Handles a PATCH request and returns a response.
-		 * @param Request $request
-		 * @return Response|Responsable
-		 * @throws Throwable
-		 */
-		public function update(Request $request)
-		{
-			throw new Exception('Endpoint PATCH handler is not implemented.');
-		}
-		
-		/**
-		 * Handles a DELETE request and returns a response.
-		 * @param Request $request
-		 * @return Response|Responsable
-		 * @throws Throwable
-		 */
-		public function delete(Request $request)
-		{
-			throw new Exception('Endpoint DELETE handler is not implemented.');
 		}
 
 		/**
