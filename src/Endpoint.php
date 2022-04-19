@@ -64,16 +64,16 @@
 			$routes = [];
 			
 			if ($this->get)
-				$routes[] = $router->get($this->getUri ?: $this->uri, Closure::fromCallable([$this, 'get']))->name("{$this->routePrefix}get");
+				$routes[] = $this->createNamedRoute($router, ['get', 'head'], 'get', $this->getUri);
 			
 			if ($this->post)
-				$routes[] = $router->post($this->postUri ?: $this->uri, Closure::fromCallable([$this, 'post']))->name("{$this->routePrefix}post");
+				$routes[] = $this->createNamedRoute($router, 'post', 'post', $this->postUri);
 			
 			if ($this->update)
-				$routes[] = $router->patch($this->updateUri ?: $this->uri, Closure::fromCallable([$this, 'update']))->name("{$this->routePrefix}update");
+				$routes[] = $this->createNamedRoute($router, 'update', 'update', $this->updateUri);
 			
 			if ($this->delete)
-				$routes[] = $router->delete($this->deleteUri ?: $this->uri, Closure::fromCallable([$this, 'delete']))->name("{$this->routePrefix}delete");
+				$routes[] = $this->createNamedRoute($router, 'delete', 'delete', $this->deleteUri);
 			
 			/** @var Route $route */
 			foreach($routes as $route)
@@ -81,6 +81,58 @@
 				if ($this->middleware)
 					$route->middleware($this->middleware);
 			}
+			
+			$this->registerCustomRoutes($router);
+		}
+		
+		/**
+		 * Creates a closure for the instance method on this endpoint.
+		 * @param string $method
+		 * @return Closure
+		 */
+		protected function getClosure(string $method): Closure
+		{
+			return Closure::fromCallable([$this, $method]);
+		}
+		
+		/**
+		 * Creates a route name based on the route prefix and method name.
+		 * @param string $method
+		 * @return string
+		 */
+		protected function getRouteName(string $method): string
+		{
+			return $this->routePrefix . $method;
+		}
+		
+		/**
+		 * Creates a named route using the same method name as the route name.
+		 * @param Router $router The router used to register the route.
+		 * @param string|string[] $methods
+		 * @param string $name The name of the method and the route name.
+		 * @param string|null $uri The URI for the route, or null to use the endpoint's default URI.
+		 * @return Route
+		 */
+		protected function createNamedRoute(Router $router, $methods, string $name, ?string $uri = null): Route
+		{
+			if (is_array($methods))
+				$methods = array_map(fn($method) => strtoupper($method), $methods);
+			else
+				$methods = strtoupper($methods);
+			
+			return $router->addRoute($methods, $uri ?? $this->uri, $this->getClosure($name))->name($this->getRouteName($name));
+		}
+		
+		/**
+		 * Allows the endpoint to register any additional custom routes under the same group settings.
+		 * Use the getClosure(), getRouteName() and createdNamedRoute() helper methods to bind your endpoint's routes.
+		 * This method is not called within a group for the endpoint and as such does include bindings to the
+		 * endpoint middleware and URI/route name prefixes.
+		 * @param Router|null $router
+		 * @return void
+		 */
+		protected function registerCustomRoutes(?Router $router)
+		{
 		}
 
 		/**

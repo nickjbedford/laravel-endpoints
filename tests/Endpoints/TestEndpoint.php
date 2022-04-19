@@ -1,5 +1,5 @@
 <?php
-	namespace Endpoints;
+	namespace YetAnother\Tests\Endpoints;
 	
 	use Illuminate\Http\Request;
 	use Symfony\Component\HttpFoundation\Response;

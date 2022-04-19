@@ -1,8 +1,10 @@
 <?php
-	namespace Endpoints;
+	namespace YetAnother\Tests\Endpoints;
 	
-	use Orchestra\Testbench\TestCase;
+	use Illuminate\Support\Facades\Artisan;
+	use Symfony\Component\Console\Output\BufferedOutput;
 	use YetAnother\Laravel\EndpointServiceProvider;
+	use YetAnother\Tests\TestCase;
 	
 	class EndpointServiceProviderTestCase extends TestCase
 	{
@@ -24,6 +26,9 @@
 		{
 			$domainUrl = config('app.url');
 			$url = $domainUrl . TestEndpoint::URI;
+			
+			Artisan::call("route:list", [], $output = new BufferedOutput());
+			$output = $output->fetch();
 			
 			self::assertEquals($url, route(TestEndpoint::PREFIX . 'get'));
 			self::assertEquals($url, route(TestEndpoint::PREFIX . 'post'));

@@ -1,7 +1,7 @@
 <?php
-	namespace Endpoints;
+	namespace YetAnother\Tests\Endpoints;
 	
-	use Orchestra\Testbench\TestCase;
+	use YetAnother\Tests\TestCase;
 	
 	class TestEndpointTestCase extends TestCase
 	{
@@ -24,9 +24,12 @@
 		
 		function testTestEndpointGetReturnsSuccess()
 		{
-			$response = $this->get(route(TestEndpoint::PREFIX . 'get', [ 'user' => 123 ]))
-				->assertOk()
-				->getOriginalContent();
+			$url = route(TestEndpoint::PREFIX . 'get', ['user' => 123]);
+			$this->assertEquals(url(TestEndpoint::URI . "/123"), $url);
+			
+			$response = $this->get($url)
+			                 ->assertOk()
+			                 ->getOriginalContent();
 			
 			self::assertTrue($response['success']);
 			self::assertEquals(123, $response['data']);
