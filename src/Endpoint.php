@@ -18,10 +18,6 @@
 	
 	/**
 	 * Represents an endpoint controller.
-	 * @method Response|Responsable get(Request $request, ...$args)
-	 * @method Response|Responsable post(Request $request, ...$args)
-	 * @method Response|Responsable update(Request $request, ...$args)
-	 * @method Response|Responsable delete(Request $request, ...$args)
 	 */
 	abstract class Endpoint
 	{
