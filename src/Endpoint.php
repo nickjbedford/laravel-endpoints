@@ -70,7 +70,7 @@
 				$routes[] = $this->createNamedRoute($router, 'post', 'post', $this->postUri);
 			
 			if ($this->update)
-				$routes[] = $this->createNamedRoute($router, 'update', 'update', $this->updateUri);
+				$routes[] = $this->createNamedRoute($router, 'patch', 'update', $this->updateUri);
 			
 			if ($this->delete)
 				$routes[] = $this->createNamedRoute($router, 'delete', 'delete', $this->deleteUri);
