@@ -21,7 +21,7 @@
 		protected bool $delete = true;
 		protected string $routePrefix = self::PREFIX;
 		
-		protected ?string $getUri = self::URI . '/{user?}';
+		protected ?string $getUri = '/{user?}';
 		
 		function get(Request $request): Response
 		{

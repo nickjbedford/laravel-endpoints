@@ -116,7 +116,7 @@
 			else
 				$methods = strtoupper($methods);
 			
-			return $router->addRoute($methods, $uri ?? $this->uri, $this->getClosure($name))->name($this->getRouteName($name));
+			return $router->addRoute($methods, $this->uri . ($uri ?? ''), $this->getClosure($name))->name($this->getRouteName($name));
 		}
 		
 		/**
