@@ -7,10 +7,10 @@
 	/**
 	 * Attributes a route name prefix to an endpoint class.
 	 */
-	#[Attribute]
+	#[Attribute(Attribute::TARGET_CLASS)]
 	readonly class RoutePrefix
 	{
-		public function __construct(public string $prefix)
+		public function __construct(public string $routePrefix)
 		{
 		}
 	}

@@ -27,7 +27,7 @@
 		use RespondsWithJsonShortcuts,
 			CreatesRoutes;
 		
-		const RouteAttributes = [
+		const RouteAttributesClasses = [
 			Get::class,
 			Post::class,
 			Put::class,
@@ -40,51 +40,49 @@
 		 * does not define any wrapping group itself.
 		 * @param Router|null $router
 		 */
-		public function register(?Router $router = null): void
+		public static function register(?Router $router = null): void
 		{
-			$reflection = new ReflectionClass($this);
+			$reflection = new ReflectionClass(static::class);
 			
 			/** @var string[] $middleware */
-			$middleware = $reflection->getAttributes(Middleware::class)[0]?->newInstance()->middleware ?? [];
-			$routePrefix = $reflection->getAttributes(RoutePrefix::class)[0]?->newInstance()->prefix ?? '';
-			$uriPrefix = $reflection->getAttributes(Uri::class)[0]?->newInstance()->uriPrefix ?? '';
+			$attributes = $reflection->getAttributes();
+			$group = [];
 			
-			$router ??= app('router');
-			
-			foreach($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method)
+			foreach($attributes as $attribute)
 			{
-				foreach($method->getAttributes() as $attribute)
+				switch($attribute->getName())
 				{
-					if (in_array($attribute->getName(), self::RouteAttributes) &&
-					    $instance = $attribute->newInstance())
-					{
-						$action = $this->getClosure($method->getName());
-						$name = $routePrefix . ($instance->name ?? $method->getName());
-						$uri = $uriPrefix . $instance->uri;
+					case Middleware::class:
+						$group['middleware'] = $attribute->newInstance()->middleware;
+						break;
 						
-						$route = $router->addRoute($instance->methods, $uri, $action)
-						                ->name($this->getRouteName($name));
-	
-						if (!empty($middleware))
-							$route->middleware($middleware);
-					}
+					case RoutePrefix::class:
+						$group['as'] = $attribute->newInstance()->routePrefix;
+						break;
+						
+					case Uri::class:
+						$group['prefix'] = $attribute->newInstance()->uriPrefix;
+						break;
 				}
 			}
 			
-			$this->registerCustomRoutes($router, $middleware, $routePrefix);
-		}
-		
-		/**
-		 * Allows the endpoint to register any additional custom routes under the same group settings.
-		 * Use the getClosure(), getRouteName() and createdNamedRoute() helper methods to bind your endpoint's routes.
-		 * This method is not called within a group for the endpoint and as such does include bindings to the
-		 * endpoint middleware and URI/route name prefixes.
-		 * @param Router|null $router
-		 * @param array $middleware
-		 * @param string $routePrefix
-		 * @return void
-		 */
-		protected function registerCustomRoutes(?Router $router, array $middleware, string $routePrefix = '')
-		{
+			$router ??= app('router');
+			$router->group($group, function() use($reflection, $router)
+			{
+				$className = static::class . '@';
+				
+				foreach($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method)
+				{
+					foreach($method->getAttributes() as $attribute)
+					{
+						if (in_array($attribute->getName(), self::RouteAttributesClasses) &&
+						    $instance = $attribute->newInstance())
+						{
+							$router->addRoute($instance->methods, $instance->uri, $className . $method->getName())
+							       ->name($instance->name ?? $method->getName());
+						}
+					}
+				}
+			});
 		}
 	}
