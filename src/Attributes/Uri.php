@@ -8,15 +8,15 @@
 	 * Attributes middleware to an endpoint class.
 	 */
 	#[Attribute(Attribute::TARGET_CLASS)]
-	readonly class Middleware
+	readonly class Uri
 	{
-		public array $middleware;
+		public string $uriPrefix;
 		
 		/**
-		 * @param string ...$middleware
+		 * @param string $uriPrefix
 		 */
-		public function __construct(...$middleware)
+		public function __construct(string $uriPrefix = '')
 		{
-			$this->middleware = $middleware;
+			$this->uriPrefix = $uriPrefix;
 		}
 	}

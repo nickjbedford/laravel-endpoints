@@ -7,18 +7,17 @@
 	
 	namespace YetAnother\Laravel;
 	
-	use Illuminate\Routing\Route;
 	use Illuminate\Routing\Router;
 	use ReflectionClass;
 	use ReflectionMethod;
 	use YetAnother\Laravel\Attributes\Delete;
 	use YetAnother\Laravel\Attributes\Get;
-	use YetAnother\Laravel\Attributes\Guard;
 	use YetAnother\Laravel\Attributes\Middleware;
 	use YetAnother\Laravel\Attributes\Patch;
 	use YetAnother\Laravel\Attributes\Post;
 	use YetAnother\Laravel\Attributes\Put;
 	use YetAnother\Laravel\Attributes\RoutePrefix;
+	use YetAnother\Laravel\Attributes\Uri;
 	
 	/**
 	 * Represents an endpoint controller that uses PHP attributes to specify route information.
@@ -27,9 +26,6 @@
 	{
 		use RespondsWithJsonShortcuts,
 			CreatesRoutes;
-		
-		/** @var string $uri Set this property to the URI of the API endpoint. */
-		protected string $uri = '';
 		
 		const RouteAttributes = [
 			Get::class,
@@ -51,6 +47,7 @@
 			/** @var string[] $middleware */
 			$middleware = $reflection->getAttributes(Middleware::class)[0]?->newInstance()->middleware ?? [];
 			$routePrefix = $reflection->getAttributes(RoutePrefix::class)[0]?->newInstance()->prefix ?? '';
+			$uriPrefix = $reflection->getAttributes(Uri::class)[0]?->newInstance()->uriPrefix ?? '';
 			
 			$router ??= app('router');
 			
@@ -63,7 +60,7 @@
 					{
 						$action = $this->getClosure($method->getName());
 						$name = $routePrefix . ($instance->name ?? $method->getName());
-						$uri = $this->uri . $instance->uri;
+						$uri = $uriPrefix . $instance->uri;
 						
 						$route = $router->addRoute($instance->methods, $uri, $action)
 						                ->name($this->getRouteName($name));

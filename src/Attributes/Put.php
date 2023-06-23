@@ -5,7 +5,10 @@
 	use Attribute;
 	use YetAnother\Laravel\Method;
 	
-	#[Attribute]
+	/**
+	 * Attributes a PUT route to an endpoint class method.
+	 */
+	#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 	readonly class Put extends Route
 	{
 		public function __construct(

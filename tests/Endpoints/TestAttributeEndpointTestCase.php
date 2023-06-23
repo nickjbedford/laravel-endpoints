@@ -5,11 +5,6 @@
 	
 	class TestAttributeEndpointTestCase extends TestCase
 	{
-		protected function setUp(): void
-		{
-			parent::setUp();
-		}
-		
 		protected function setUpApplicationRoutes(): void
 		{
 			$endpoint = new TestAttributedEndpoint();
@@ -23,6 +18,7 @@
 			
 			self::assertEquals($url, route(TestAttributedEndpoint::PREFIX . 'get'));
 			self::assertEquals($url, route(TestAttributedEndpoint::PREFIX . 'post'));
+			self::assertEquals($url . '/other', route(TestAttributedEndpoint::PREFIX . 'postOther'));
 			self::assertEquals($url, route(TestAttributedEndpoint::PREFIX . 'update'));
 			self::assertEquals($url, route(TestAttributedEndpoint::PREFIX . 'delete'));
 		}
@@ -48,6 +44,16 @@
 			
 			self::assertTrue($response['success']);
 			self::assertEquals(TestAttributedEndpoint::PostResponse, $response['data']);
+		}
+		
+		function testTestAttributedEndpointPostOtherReturnsSuccess()
+		{
+			$response = $this->post(route(TestAttributedEndpoint::PREFIX . 'postOther'))
+				->assertOk()
+				->getOriginalContent();
+			
+			self::assertTrue($response['success']);
+			self::assertEquals(TestAttributedEndpoint::PostResponse . 'other', $response['data']);
 		}
 		
 		function testTestAttributedEndpointUpdateReturnsSuccess()

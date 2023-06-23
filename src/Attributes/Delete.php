@@ -5,7 +5,10 @@
 	use Attribute;
 	use YetAnother\Laravel\Method;
 	
-	#[Attribute]
+	/**
+	 * Attributes a DELETE route to an endpoint class method.
+	 */
+	#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 	readonly class Delete extends Route
 	{
 		public function __construct(

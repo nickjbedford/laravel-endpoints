@@ -4,6 +4,9 @@
 	
 	use Attribute;
 	
+	/**
+	 * Attributes a route name prefix to an endpoint class.
+	 */
 	#[Attribute]
 	readonly class RoutePrefix
 	{

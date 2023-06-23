@@ -4,7 +4,10 @@
 	use Attribute;
 	use YetAnother\Laravel\Method;
 	
-	#[Attribute]
+	/**
+	 * Attributes a route to an endpoint class method.
+	 */
+	#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 	readonly class Route
 	{
 		/** @var string[] $methods */
