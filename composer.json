@@ -14,13 +14,13 @@
 		}
 	],
 	"require": {
-		"php": ">=7.4",
-		"laravel/framework": ">=6",
+		"php": "^8.2",
+		"laravel/framework": ">=8",
         "nickjbedford/json-response-laravel": "*",
 		"ext-json": "*"
 	},
 	"require-dev": {
-        "phpunit/phpunit": "*",
+        "phpunit/phpunit": "9.*",
 		"orchestra/testbench": "*"
 	},
     "autoload": {
