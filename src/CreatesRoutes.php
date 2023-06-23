@@ -18,7 +18,7 @@
 		 */
 		protected function getClosure(string $method): Closure
 		{
-			return Closure::fromCallable([$this, $method]);
+			return $this->$method(...);
 		}
 		
 		/**

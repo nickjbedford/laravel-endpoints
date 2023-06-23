@@ -7,17 +7,17 @@
 	
 	namespace YetAnother\Laravel;
 	
+	use Illuminate\Routing\Route;
 	use Illuminate\Routing\Router;
-	use ReflectionAttribute;
 	use ReflectionClass;
 	use ReflectionMethod;
 	use YetAnother\Laravel\Attributes\Delete;
 	use YetAnother\Laravel\Attributes\Get;
+	use YetAnother\Laravel\Attributes\Guard;
 	use YetAnother\Laravel\Attributes\Middleware;
 	use YetAnother\Laravel\Attributes\Patch;
 	use YetAnother\Laravel\Attributes\Post;
 	use YetAnother\Laravel\Attributes\Put;
-	use YetAnother\Laravel\Attributes\Route;
 	use YetAnother\Laravel\Attributes\RoutePrefix;
 	
 	/**
@@ -30,6 +30,14 @@
 		
 		/** @var string $uri Set this property to the URI of the API endpoint. */
 		protected string $uri = '';
+		
+		const RouteAttributes = [
+			Get::class,
+			Post::class,
+			Put::class,
+			Patch::class,
+			Delete::class
+		];
 		
 		/**
 		 * Registers the endpoint routes. This method can be called within a Route::group() call and
@@ -48,26 +56,21 @@
 			
 			foreach($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method)
 			{
-				/** @var ReflectionAttribute $routeAttr */
-				$routeAttr = $method->getAttributes(Get::class)[0] ??
-				             $method->getAttributes(Post::class)[0] ??
-				             $method->getAttributes(Patch::class)[0] ??
-				             $method->getAttributes(Delete::class)[0] ??
-				             $method->getAttributes(Put::class)[0] ??
-				             $method->getAttributes(Route::class)[0] ?? null;
-				
-				/** @var Route $attr */
-				if ($routeAttr && $attr = $routeAttr->newInstance())
+				foreach($method->getAttributes() as $attribute)
 				{
-					$action = $this->getClosure($method->getName());
-					$name = $routePrefix . ($attr->name ?? $method->getName());
-					$uri = $this->uri . $attr->uri;
-					
-					$route = $router->addRoute($attr->methods, $uri, $action)
-					                ->name($this->getRouteName($name));
-
-					if (!empty($middleware))
-						$route->middleware($middleware);
+					if (in_array($attribute->getName(), self::RouteAttributes) &&
+					    $instance = $attribute->newInstance())
+					{
+						$action = $this->getClosure($method->getName());
+						$name = $routePrefix . ($instance->name ?? $method->getName());
+						$uri = $this->uri . $instance->uri;
+						
+						$route = $router->addRoute($instance->methods, $uri, $action)
+						                ->name($this->getRouteName($name));
+	
+						if (!empty($middleware))
+							$route->middleware($middleware);
+					}
 				}
 			}
 			

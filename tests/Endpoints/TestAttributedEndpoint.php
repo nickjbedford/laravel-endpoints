@@ -6,6 +6,7 @@
 	use YetAnother\Laravel\AttributedEndpoint;
 	use YetAnother\Laravel\Attributes\Delete;
 	use YetAnother\Laravel\Attributes\Get;
+	use YetAnother\Laravel\Attributes\Guard;
 	use YetAnother\Laravel\Attributes\Middleware;
 	use YetAnother\Laravel\Attributes\Patch;
 	use YetAnother\Laravel\Attributes\Post;
@@ -13,6 +14,7 @@
 	
 	#[RoutePrefix(TestAttributedEndpoint::PREFIX)]
 	#[Middleware('web')]
+	#[Guard('admin')]
 	class TestAttributedEndpoint extends AttributedEndpoint
 	{
 		const URI = '/test-endpoint';

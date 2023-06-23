@@ -3,6 +3,7 @@
 	namespace YetAnother\Laravel\Attributes;
 	
 	use Attribute;
+	use YetAnother\Laravel\Method;
 	
 	#[Attribute]
 	readonly class Patch extends Route
@@ -12,6 +13,6 @@
 			?string $name = null,
 			?array $where = null)
 		{
-			parent::__construct('PATCH', $uri, $name, $where);
+			parent::__construct([Method::Patch], $uri, $name, $where);
 		}
 	}

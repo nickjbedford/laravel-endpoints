@@ -3,6 +3,7 @@
 	namespace YetAnother\Laravel\Attributes;
 	
 	use Attribute;
+	use YetAnother\Laravel\Method;
 	
 	#[Attribute]
 	readonly class Put extends Route
@@ -12,6 +13,6 @@
 			?string $name = null,
 			?array $where = null)
 		{
-			parent::__construct('PUT', $uri, $name, $where);
+			parent::__construct([Method::Put], $uri, $name, $where);
 		}
 	}
