@@ -8,7 +8,7 @@
 	
 	class EndpointServiceProviderTestCase extends TestCase
 	{
-		protected function getEnvironmentSetUp($app)
+		protected function defineEnvironment($app)
 		{
 			$app['config']->set('endpoints', [
 				TestEndpoint::class
@@ -28,7 +28,6 @@
 			$url = $domainUrl . TestEndpoint::URI;
 			
 			Artisan::call("route:list", [], $output = new BufferedOutput());
-			$output = $output->fetch();
 			
 			self::assertEquals($url, route(TestEndpoint::PREFIX . 'get'));
 			self::assertEquals($url, route(TestEndpoint::PREFIX . 'post'));

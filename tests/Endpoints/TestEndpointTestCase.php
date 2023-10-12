@@ -5,7 +5,7 @@
 	
 	class TestEndpointTestCase extends TestCase
 	{
-		protected function setUpApplicationRoutes(): void
+		protected function setUpApplicationRoutes($app): void
 		{
 			$endpoint = new TestEndpoint();
 			$endpoint->register();

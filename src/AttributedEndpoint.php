@@ -8,6 +8,7 @@
 	namespace YetAnother\Laravel;
 	
 	use Illuminate\Routing\Router;
+	use ReflectionAttribute;
 	use ReflectionClass;
 	use ReflectionMethod;
 	use YetAnother\Laravel\Attributes\Delete;
@@ -44,45 +45,58 @@
 		{
 			$reflection = new ReflectionClass(static::class);
 			
-			/** @var string[] $middleware */
-			$attributes = $reflection->getAttributes();
-			$group = [];
+			$attributes = collect($reflection->getAttributes());
+			$uriAttributes = $attributes
+					->filter(fn(ReflectionAttribute $attribute) => $attribute->getName() === Uri::class)
+					->map(fn(ReflectionAttribute $attribute) => $attribute->newInstance());
 			
-			foreach($attributes as $attribute)
-			{
-				switch($attribute->getName())
-				{
-					case Middleware::class:
-						$group['middleware'] = $attribute->newInstance()->middleware;
-						break;
-						
-					case RoutePrefix::class:
-						$group['as'] = $attribute->newInstance()->routePrefix;
-						break;
-						
-					case Uri::class:
-						$group['prefix'] = $attribute->newInstance()->uriPrefix;
-						break;
-				}
-			}
+			if (empty($uriAttributes))
+				$uriAttributes[] = new Uri();
+			
+			/** @var Middleware $middleware */
+			$middleware = $attributes
+				->filter(fn(ReflectionAttribute $attribute) => $attribute->getName() === Middleware::class)
+				->map(fn(ReflectionAttribute $attribute) => $attribute->newInstance())
+				->first();
+			
+			/** @var RoutePrefix $routePrefix */
+			$routePrefix = $attributes
+				->filter(fn(ReflectionAttribute $attribute) => $attribute->getName() === RoutePrefix::class)
+				->map(fn(ReflectionAttribute $attribute) => $attribute->newInstance())
+				->first();
 			
 			$router ??= app('router');
-			$router->group($group, function() use($reflection, $router)
+			
+			foreach($uriAttributes as $uri)
 			{
-				$className = static::class . '@';
+				$group = [];
 				
-				foreach($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method)
+				if ($uri->uriPrefix !== '')
+					$group['prefix'] = $uri->uriPrefix;
+				
+				if ($middleware)
+					$group['middleware'] = $middleware->middleware;
+				
+				if ($routePrefix)
+					$group['as'] = $routePrefix->routePrefix;
+				
+				$router->group($group, function() use($reflection, $router)
 				{
-					foreach($method->getAttributes() as $attribute)
+					$className = static::class . '@';
+					
+					foreach($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method)
 					{
-						if (in_array($attribute->getName(), self::RouteAttributesClasses) &&
-						    $instance = $attribute->newInstance())
+						foreach($method->getAttributes() as $attribute)
 						{
-							$router->addRoute($instance->methods, $instance->uri, $className . $method->getName())
-							       ->name($instance->name ?? $method->getName());
+							if (in_array($attribute->getName(), self::RouteAttributesClasses) &&
+							    $instance = $attribute->newInstance())
+							{
+								$router->addRoute($instance->methods, $instance->uri, $className . $method->getName())
+								       ->name($instance->name ?? $method->getName());
+							}
 						}
 					}
-				}
-			});
+				});
+			}
 		}
 	}
