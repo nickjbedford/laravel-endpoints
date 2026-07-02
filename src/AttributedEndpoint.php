@@ -7,7 +7,6 @@
 	
 	namespace YetAnother\Laravel;
 	
-	use Attribute;
 	use Illuminate\Routing\Router;
 	use ReflectionAttribute;
 	use ReflectionClass;

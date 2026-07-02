@@ -27,7 +27,7 @@
 			$domainUrl = config('app.url');
 			$url = $domainUrl . TestEndpoint::URI;
 			
-			Artisan::call("route:list", [], $output = new BufferedOutput());
+			Artisan::call("route:list", [], new BufferedOutput());
 			
 			self::assertEquals($url, route(TestEndpoint::PREFIX . 'get'));
 			self::assertEquals($url, route(TestEndpoint::PREFIX . 'post'));

@@ -28,17 +28,17 @@
 			return $this->success($request->user ?? self::GetResponse);
 		}
 		
-		function post(Request $request): Response
+		function post(): Response
 		{
 			return $this->success(self::PostResponse);
 		}
 		
-		function update(Request $request): Response
+		function update(): Response
 		{
 			return $this->success(self::UpdateResponse);
 		}
 		
-		function delete(Request $request): Response
+		function delete(): Response
 		{
 			return $this->success(self::DeleteResponse);
 		}
