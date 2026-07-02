@@ -11,7 +11,7 @@
 		 * @return void
 		 * @throws Exception
 		 */
-		public function boot()
+		public function boot(): void
 		{
 			collect(config('endpoints', []))
 				->each(function(string $class)

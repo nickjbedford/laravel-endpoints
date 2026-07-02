@@ -7,12 +7,12 @@
 	
 	class TestEndpoint extends Endpoint
 	{
-		const URI = '/test-endpoint';
-		const PREFIX = 'test.endpoint.';
-		const GetResponse = 'Hello, world';
-		const PostResponse = "It's posted!";
-		const UpdateResponse = "Patched the hole.";
-		const DeleteResponse = "It's gone :(";
+		const string URI = '/test-endpoint';
+		const string PREFIX = 'test.endpoint.';
+		const string GetResponse = 'Hello, world';
+		const string PostResponse = "It's posted!";
+		const string UpdateResponse = "Patched the hole.";
+		const string DeleteResponse = "It's gone :(";
 		
 		protected string $uri = self::URI;
 		protected bool $get = true;

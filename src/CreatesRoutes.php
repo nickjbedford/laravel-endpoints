@@ -33,19 +33,31 @@
 		
 		/**
 		 * Creates a named route using the same method name as the route name.
+		 *
 		 * @param Router $router The router used to register the route.
 		 * @param string|string[] $methods
 		 * @param string $name The name of the method and the route name.
 		 * @param string|null $uri The URI for the route, or null to use the endpoint's default URI.
-		 * @return \YetAnother\Laravel\Attributes\Route
+		 * @param string|array|null $middleware Optional middleware to apply to the route.
+		 * @return Route
 		 */
-		protected function createNamedRoute(Router $router, $methods, string $name, ?string $uri = null): Route
+		protected function createNamedRoute(Router $router,
+		                                    array|string $methods,
+		                                    string $name,
+		                                    ?string $uri = null,
+		                                    string|array|null $middleware = null): Route
 		{
 			if (is_array($methods))
 				$methods = array_map(fn($method) => strtoupper($method), $methods);
 			else
 				$methods = strtoupper($methods);
 			
-			return $router->addRoute($methods, $this->uri . ($uri ?? ''), $this->getClosure($name))->name($this->getRouteName($name));
+			$route = $router->addRoute($methods, $this->uri . ($uri ?? ''), $this->getClosure($name))
+			                ->name($this->getRouteName($name));
+			
+			if (!empty($middleware))
+				$route->middleware($middleware);
+			
+			return $route;
 		}
 	}

@@ -2,9 +2,15 @@
 	namespace YetAnother\Tests\Endpoints;
 	
 	use YetAnother\Tests\TestCase;
+	use YetAnother\Tests\TestMiddleware;
 	
 	class TestAttributeEndpointTestCase extends TestCase
 	{
+		protected function getEnvironmentSetUp($app): void
+		{
+			$app['router']->aliasMiddleware('test.middleware', TestMiddleware::class);
+		}
+		
 		protected function setUpApplicationRoutes($app): void
 		{
 			$endpoint = new TestAttributedEndpoint();

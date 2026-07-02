@@ -7,7 +7,7 @@
 	/**
 	 * Attributes middleware to an endpoint class.
 	 */
-	#[Attribute(Attribute::TARGET_CLASS)]
+	#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 	readonly class Middleware
 	{
 		public array $middleware;

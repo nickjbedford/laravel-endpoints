@@ -8,7 +8,7 @@
 	
 	class EndpointServiceProviderTestCase extends TestCase
 	{
-		protected function defineEnvironment($app)
+		protected function defineEnvironment($app): void
 		{
 			$app['config']->set('endpoints', [
 				TestEndpoint::class

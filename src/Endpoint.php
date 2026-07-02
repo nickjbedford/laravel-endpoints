@@ -7,8 +7,8 @@
 	
 	namespace YetAnother\Laravel;
 	
-	use Illuminate\Routing\Route;
 	use Illuminate\Routing\Router;
+	use YetAnother\Laravel\Attributes\Route;
 	
 	/**
 	 * Represents an endpoint controller.
@@ -46,7 +46,7 @@
 		 * does not define any wrapping group itself.
 		 * @param Router|null $router
 		 */
-		public function register(?Router $router = null)
+		public function register(?Router $router = null): void
 		{
 			$router ??= app('router');
 			$routes = [];
@@ -63,7 +63,7 @@
 			if ($this->delete)
 				$routes[] = $this->createNamedRoute($router, 'delete', 'delete', $this->deleteUri);
 			
-			/** @var \YetAnother\Laravel\Attributes\Route $route */
+			/** @var Route $route */
 			foreach($routes as $route)
 			{
 				if ($this->middleware)

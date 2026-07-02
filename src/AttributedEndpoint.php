@@ -7,6 +7,7 @@
 	
 	namespace YetAnother\Laravel;
 	
+	use Attribute;
 	use Illuminate\Routing\Router;
 	use ReflectionAttribute;
 	use ReflectionClass;
@@ -17,6 +18,7 @@
 	use YetAnother\Laravel\Attributes\Patch;
 	use YetAnother\Laravel\Attributes\Post;
 	use YetAnother\Laravel\Attributes\Put;
+	use YetAnother\Laravel\Attributes\Query;
 	use YetAnother\Laravel\Attributes\RoutePrefix;
 	use YetAnother\Laravel\Attributes\Uri;
 	
@@ -28,12 +30,13 @@
 		use RespondsWithJsonShortcuts,
 			CreatesRoutes;
 		
-		const RouteAttributesClasses = [
+		const array RouteAttributesClasses = [
 			Get::class,
 			Post::class,
 			Put::class,
 			Patch::class,
-			Delete::class
+			Delete::class,
+			Query::class,
 		];
 		
 		/**
@@ -86,13 +89,24 @@
 					
 					foreach($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method)
 					{
-						foreach($method->getAttributes() as $attribute)
+						$methodAttributes = $method->getAttributes();
+						
+						/** @var ReflectionAttribute $middlewareReflectionAttribute */
+						$middlewareReflectionAttribute = current(array_filter($methodAttributes,
+							fn($attribute) => $attribute->getName() === Middleware::class)) ?: null;
+						
+						/** @var Middleware $middlewareAttribute */
+						$middlewareAttribute = $middlewareReflectionAttribute?->newInstance();
+						$middleware = $middlewareAttribute?->middleware ?? [];
+						
+						foreach($methodAttributes as $attribute)
 						{
 							if (in_array($attribute->getName(), self::RouteAttributesClasses) &&
 							    $instance = $attribute->newInstance())
 							{
 								$router->addRoute($instance->methods, $instance->uri, $className . $method->getName())
-								       ->name($instance->name ?? $method->getName());
+								       ->name($instance->name ?? $method->getName())
+								       ->middleware($middleware);
 							}
 						}
 					}
